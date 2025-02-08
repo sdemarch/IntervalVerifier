@@ -1,0 +1,25 @@
+"""
+This module defines the behavior of an interval arithmetic-based representation
+of a neural network linear layer
+
+"""
+
+from interval import interval
+from pynever import nodes
+from pynever.tensors import Tensor
+
+
+class LinearIntervalLayer:
+    def __init__(self, fc: nodes.FullyConnectedNode, precision: int):
+        self.ref_layer = fc
+        self.precision = precision
+        self.epsilon = 1e-6 if self.precision == 32 else 1e-12  # TODO fix
+
+        self.weight = self.interval_convert(fc.weight)
+        self.bias = self.interval_convert(fc.bias)
+
+    def interval_from_value(self, value: float) -> interval:
+        return interval[value - self.epsilon, value + self.epsilon]
+
+    def interval_convert(self, matrix: Tensor) -> interval:
+        pass
