@@ -4,11 +4,10 @@ of a neural network model
 
 """
 
-from interval import interval
-
 from core import ops
 from core.layer import LinearIntervalLayer
-from parser import vnnlib # type: ignore
+from parser import onnx
+from parser import vnnlib
 
 
 class ModelOptions:
@@ -32,13 +31,9 @@ class IntervalModel:
         return ops.max_upper(classifier_ubs) < correct.inf
 
     def parse_layer(self) -> LinearIntervalLayer:
-        pynever_net = ONNXConverter().to_neural_network(conv.load_network_path(self.onnx_path))
-        linear = pynever_net.get_roots()[0]
-
-        assert len(pynever_net.nodes) == 1
-        assert isinstance(linear, nodes.FullyConnectedNode)
-
-        return LinearIntervalLayer(linear, self.work_precision)
+        """Procedure to read the first layer of a ONNX network"""
+        nn = onnx.to_nn(self.onnx_path, self.epsilon)
+        return nn[0]
 
     def propagate(self, lbs: list, ubs: list) -> tuple:
         """Procedure to compute the numeric interval bounds of a linear layer"""
