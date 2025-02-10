@@ -11,10 +11,12 @@ from core.layer import LinearIntervalLayer
 
 def interval_convert(matrix: np.ndarray, epsilon: float):
     """Procedure to convert a Tensor to an interval matrix"""
-    result = []
+    if len(matrix.shape) < 2:
+        matrix = np.expand_dims(matrix, 1)
+
+    result = [[0 for _ in range(matrix.shape[1])] for _ in range(matrix.shape[0])]
 
     for i in range(matrix.shape[0]):
-        result.append([])
         for j in range(matrix.shape[1]):
             result[i][j] = ops.interval_from_value(matrix[i, j], epsilon)
 
@@ -47,7 +49,7 @@ def to_nn(onnx_path: str, epsilon: float):
             weight = interval_convert(weight, epsilon)
 
             if len(node.input) <= 2:
-                bias = interval_convert(np.zeros(neurons), epsilon)
+                bias = interval_convert(np.zeros((neurons, 1)), epsilon)
             else:
                 bias = interval_convert(parameters[node.input[2]], epsilon)
 

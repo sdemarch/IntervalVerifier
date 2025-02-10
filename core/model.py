@@ -27,8 +27,9 @@ class IntervalModel:
     def check_robust(classifier_lbs: list, classifier_ubs: list, label: int) -> bool:
         """Procedure to check whether the robustness specification holds"""
         correct = classifier_lbs[label]
+        classifier_ubs.pop(label)
 
-        return ops.max_upper(classifier_ubs) < correct.inf
+        return ops.max_upper(classifier_ubs) < correct[0].inf
 
     def parse_layer(self) -> LinearIntervalLayer:
         """Procedure to read the first layer of a ONNX network"""

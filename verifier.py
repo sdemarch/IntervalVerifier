@@ -17,7 +17,8 @@ parser.add_argument('--precision', type=int, default=32, help='Precision bits')
 
 args = parser.parse_args()
 
-model = IntervalModel(args.net, args.precision)
-result = model.verify(args.prop)
+if __name__ == '__main__':
+    model = IntervalModel(args.net, args.precision)
+    result = model.verify(args.prop)
 
-print(result)
+    print(result)

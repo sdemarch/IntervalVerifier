@@ -13,37 +13,35 @@ def interval_from_value(value: float, epsilon: float):
 def max_upper(l: list):
     m = -10000
     for x in l:
-        if x.sup > m:
-            m = x.sup
+        if x[0].sup > m:
+            m = x[0].sup
     return m
 
 
 def get_positive(a: list):
     """Procedure to extract the positive part of a matrix"""
-    result = []
+    result = [[0 for _ in range(len(a[0]))] for _ in range(len(a))]
 
     for i in range(len(a)):
-        result.append([])
         for j in range(len(a[i])):
-            if a[i][j].sup > 0 > a[i][j].inf:
-                result[i][j] = interval[0, a[i][j].sup]
+            if a[i][j][0].sup > 0 > a[i][j][0].inf:
+                result[i][j] = interval[0, a[i][j][0].sup]
             else:
-                result[i][j] = a[i][j] if a[i][j].inf > 0 else interval[0.0, 0.0]
+                result[i][j] = a[i][j] if a[i][j][0].inf > 0 else interval[0.0, 0.0]
 
     return result
 
 
 def get_negative(a: list):
     """Procedure to extract the negative part of a matrix"""
-    result = []
+    result = [[0 for _ in range(len(a[0]))] for _ in range(len(a))]
 
     for i in range(len(a)):
-        result.append([])
         for j in range(len(a[i])):
-            if a[i][j].sup > 0 > a[i][j].inf:
-                result[i][j] = interval[a[i][j].inf, 0]
+            if a[i][j][0].sup > 0 > a[i][j][0].inf:
+                result[i][j] = interval[a[i][j][0].inf, 0]
             else:
-                result[i][j] = a[i][j] if a[i][j].sup < 0 else interval[0.0, 0.0]
+                result[i][j] = a[i][j] if a[i][j][0].sup < 0 else interval[0.0, 0.0]
 
     return result
 
@@ -53,9 +51,9 @@ def add(a: list, b: list, *args):
     result = []
 
     for i in range(len(a)):
-        result.append(a[i] + b[i])
+        result.append(a[i][0] + b[i][0])
         for x in args:
-            result[i] += x[i]
+            result[i] += x[i][0]
 
     return result
 
@@ -75,7 +73,7 @@ def matmul(a: list, b: list):
         for j in range(q):
             s = 0
             for k in range(m):
-                s += a[i][k] * b[k][j]
+                s += a[i][k] * b[k]
             result[i][j] = s
 
     return result

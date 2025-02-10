@@ -6,8 +6,7 @@ of a neural network linear layer
 
 
 class IntervalLayer:
-    def __init__(self):
-        raise NotImplementedError
+    pass
 
 
 class LinearIntervalLayer(IntervalLayer):
