@@ -8,6 +8,8 @@ from interval import interval
 from pynever import nodes
 from pynever.tensors import Tensor
 
+from core import ops
+
 
 class LinearIntervalLayer:
     def __init__(self, fc: nodes.FullyConnectedNode, precision: int):
@@ -18,5 +20,13 @@ class LinearIntervalLayer:
         self.weight = self.interval_convert(fc.weight)
         self.bias = self.interval_convert(fc.bias)
 
-    def interval_convert(self, matrix: Tensor) -> interval:
-        pass
+    def interval_convert(self, matrix: Tensor) -> list[list[interval]]:
+        """Procedure to convert a Tensor to an interval matrix"""
+        result = []
+
+        for i in range(matrix.shape[0]):
+            result.append([])
+            for j in range(matrix.shape[1]):
+                result[i][j] = ops.interval_from_value(matrix[i, j], self.epsilon)
+
+        return result
