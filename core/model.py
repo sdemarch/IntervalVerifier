@@ -42,7 +42,14 @@ class IntervalModel:
         return LinearIntervalLayer(linear, self.work_precision)
 
     def propagate(self, lbs: list[interval], ubs: list[interval]) -> tuple[list[interval], list[interval]]:
-        pass
+        """Procedure to compute the numeric interval bounds of a linear layer"""
+        weights_plus = ops.get_positive(self.layer.weight)
+        weights_minus = ops.get_negative(self.layer.weight)
+
+        low = ops.add(ops.matmul(weights_plus, lbs), ops.matmul(weights_minus, ubs), self.layer.bias)
+        upp = ops.add(ops.matmul(weights_plus, ubs), ops.matmul(weights_minus, lbs), self.layer.bias)
+
+        return low, upp
 
     def verify(self, vnnlib_path: str) -> bool:
         # 1: Read VNNLIB bounds
