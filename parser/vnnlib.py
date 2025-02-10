@@ -3,7 +3,7 @@ This module reads a VNNLIB file containing a robustness specification
 """
 
 
-def read_vnnlib(filename: str) -> tuple[list[float], list[float], int]:
+def read_vnnlib(filename: str):
     lbs = []
     ubs = []
     label = filename.split('_')[-1].replace('.vnnlib', '')

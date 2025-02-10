@@ -5,7 +5,12 @@ This module defines common operations involving intervals
 from interval import interval
 
 
-def max_upper(l: list[interval]) -> float:
+def interval_from_value(value: float, epsilon: float):
+    """Procedure to create an interval from a single value"""
+    return interval[value - epsilon, value + epsilon]
+
+
+def max_upper(l: list):
     m = -10000
     for x in l:
         if x.sup > m:
@@ -13,11 +18,7 @@ def max_upper(l: list[interval]) -> float:
     return m
 
 
-def interval_from_value(value: float, epsilon: float = 1e-6) -> interval:
-    return interval[value - epsilon, value + epsilon]
-
-
-def get_positive(a: list[list[interval]]) -> list[list[interval]]:
+def get_positive(a: list):
     """Procedure to extract the positive part of a matrix"""
     result = []
 
@@ -32,7 +33,7 @@ def get_positive(a: list[list[interval]]) -> list[list[interval]]:
     return result
 
 
-def get_negative(a: list[list[interval]]) -> list[list[interval]]:
+def get_negative(a: list):
     """Procedure to extract the negative part of a matrix"""
     result = []
 
@@ -47,7 +48,7 @@ def get_negative(a: list[list[interval]]) -> list[list[interval]]:
     return result
 
 
-def add(a: list[interval], b: list[interval], *args) -> list[interval]:
+def add(a: list, b: list, *args):
     """Procedure to sum lists of intervals"""
     result = []
 
@@ -59,7 +60,7 @@ def add(a: list[interval], b: list[interval], *args) -> list[interval]:
     return result
 
 
-def matmul(a: list[list[interval]], b: list[list[interval]]) -> list[list[interval]]:
+def matmul(a: list, b: list):
     """Procedure to multiply two 2-dimensional matrices"""
 
     assert len(a[0]) == len(b)

@@ -4,13 +4,11 @@ of a neural network model
 
 """
 
-import pynever.strategies.conversion.representation as conv
-from pynever import nodes
-from pynever.strategies.conversion.converters.onnx import ONNXConverter
+from interval import interval
 
 from core import ops
-from core.linear import LinearIntervalLayer
-from parser import vnnlib
+from core.layer import LinearIntervalLayer
+from parser import vnnlib # type: ignore
 
 
 class ModelOptions:
@@ -21,12 +19,13 @@ class IntervalModel:
     def __init__(self, onnx_path: str, work_precision: int = 64, options: ModelOptions = None):
         self.onnx_path = onnx_path
         self.work_precision = work_precision
+        self.epsilon = 1e-6 if self.work_precision == 32 else 1e-12
         self.options = options
 
         self.layer = self.parse_layer()
 
     @staticmethod
-    def check_robust(classifier_lbs: list[interval], classifier_ubs: list[interval], label: int) -> bool:
+    def check_robust(classifier_lbs: list, classifier_ubs: list, label: int) -> bool:
         """Procedure to check whether the robustness specification holds"""
         correct = classifier_lbs[label]
 
@@ -41,7 +40,7 @@ class IntervalModel:
 
         return LinearIntervalLayer(linear, self.work_precision)
 
-    def propagate(self, lbs: list[interval], ubs: list[interval]) -> tuple[list[interval], list[interval]]:
+    def propagate(self, lbs: list, ubs: list) -> tuple:
         """Procedure to compute the numeric interval bounds of a linear layer"""
         weights_plus = ops.get_positive(self.layer.weight)
         weights_minus = ops.get_negative(self.layer.weight)
@@ -56,8 +55,8 @@ class IntervalModel:
         in_lbs, in_ubs, label = vnnlib.read_vnnlib(vnnlib_path)
 
         # 2: Get interval input lbs and ubs
-        in_lbs = [ops.interval_from_value(v, self.layer.epsilon) for v in in_lbs]
-        in_ubs = [ops.interval_from_value(v, self.layer.epsilon) for v in in_ubs]
+        in_lbs = [ops.interval_from_value(v, self.epsilon) for v in in_lbs]
+        in_ubs = [ops.interval_from_value(v, self.epsilon) for v in in_ubs]
 
         # 3: Propagate input through linear layer
         out_lbs, out_ubs = self.propagate(in_lbs, in_ubs)
