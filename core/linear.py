@@ -18,8 +18,5 @@ class LinearIntervalLayer:
         self.weight = self.interval_convert(fc.weight)
         self.bias = self.interval_convert(fc.bias)
 
-    def interval_from_value(self, value: float) -> interval:
-        return interval[value - self.epsilon, value + self.epsilon]
-
     def interval_convert(self, matrix: Tensor) -> interval:
         pass
