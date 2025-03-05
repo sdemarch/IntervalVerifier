@@ -9,7 +9,7 @@ from core import ops
 from core.layer import LinearIntervalLayer
 
 
-def interval_convert(matrix: np.ndarray, epsilon: float):
+def interval_convert(matrix: np.ndarray, epsilon: float) -> list:
     """Procedure to convert a Tensor to an interval matrix"""
     if len(matrix.shape) < 2:
         matrix = np.expand_dims(matrix, 1)

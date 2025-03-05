@@ -6,7 +6,7 @@ This module reads a VNNLIB file containing a robustness specification
 def read_vnnlib(filename: str):
     lbs = []
     ubs = []
-    label = filename.split('_')[-1].replace('.vnnlib', '')
+    label = int(filename.split('_')[-1].replace('.vnnlib', ''))
 
     with open(filename, 'r') as vnnlib_file:
         # Input condition
@@ -19,4 +19,4 @@ def read_vnnlib(filename: str):
                 # We reached the output condition
                 break
 
-    return lbs, ubs, int(label)
+    return lbs, ubs, label

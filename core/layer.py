@@ -4,6 +4,10 @@ of a neural network linear layer
 
 """
 
+import numpy as np
+
+from core import ops
+
 
 class IntervalLayer:
     pass
@@ -15,3 +19,8 @@ class LinearIntervalLayer(IntervalLayer):
 
         self.weight = weight
         self.bias = bias
+
+    def predict(self, x: list) -> int:
+        """Procedure to execute the matrix multiplication"""
+        # TODO argmax
+        return np.argmax(ops.add(ops.matmul(self.weight, x), self.bias))
