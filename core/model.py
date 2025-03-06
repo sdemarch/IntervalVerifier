@@ -17,7 +17,7 @@ class ModelOptions:
 class IntervalModel:
     def __init__(self, onnx_path: str, work_precision: int = 3, options: ModelOptions = None):
         self.onnx_path = onnx_path
-        self.epsilon = 10 ** work_precision
+        self.epsilon = 10 ** -work_precision
         self.options = options
 
         self.layer = self.parse_layer()
@@ -34,7 +34,7 @@ class IntervalModel:
 
         # For each disjunction in the output property, check none is satisfied by output_bounds.
         # If one disjunction is satisfied, then it represents a potential counter-example.
-        for i in range(out_props):
+        for i in range(len(out_props)):
             if ops.check_unsafe(bounds, out_props[i], self.epsilon):
                 return False
 
@@ -61,8 +61,8 @@ class IntervalModel:
         weights_plus = ops.get_positive(self.layer.weight)
         weights_minus = ops.get_negative(self.layer.weight)
 
-        low = ops.add(ops.matmul(weights_plus, lbs), ops.matmul(weights_minus, ubs), self.layer.bias)
-        upp = ops.add(ops.matmul(weights_plus, ubs), ops.matmul(weights_minus, lbs), self.layer.bias)
+        low = ops.add(ops.matmul_left(weights_plus, lbs), ops.matmul_left(weights_minus, ubs), self.layer.bias)
+        upp = ops.add(ops.matmul_left(weights_plus, ubs), ops.matmul_left(weights_minus, lbs), self.layer.bias)
 
         return low, upp
 
@@ -79,6 +79,7 @@ class IntervalModel:
 
         # 4: Check output intersection
         num_check = self.check_num_robust(out_lbs, out_ubs, label)
+        num_check = False
         if num_check:
             return True
         else:

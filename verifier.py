@@ -13,7 +13,7 @@ from core.model import IntervalModel
 parser = ArgumentParser(description="Interval arithmetic-based neural networks verifier")
 parser.add_argument('net', type=str, help='ONNX model file')
 parser.add_argument('prop', type=str, help='VNNLIB property file')
-parser.add_argument('--precision', type=int, default=3, help='Precision digits')
+parser.add_argument('--precision', type=int, default=4, help='Precision digits')
 
 args = parser.parse_args()
 

@@ -23,4 +23,4 @@ class LinearIntervalLayer(IntervalLayer):
     def predict(self, x: list) -> int:
         """Procedure to execute the matrix multiplication"""
         # TODO argmax
-        return np.argmax(ops.add(ops.matmul(self.weight, x), self.bias))
+        return np.argmax(ops.add(ops.matmul_left(self.weight, x), self.bias))
