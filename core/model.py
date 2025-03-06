@@ -4,10 +4,11 @@ of a neural network model
 
 """
 
-from core import ops
-from core.layer import LinearIntervalLayer
 from parser import onnx
 from parser import vnnlib
+
+from core import ops
+from core.layer import LinearIntervalLayer
 
 
 class ModelOptions:
@@ -74,17 +75,9 @@ class IntervalModel:
         in_lbs = [ops.interval_from_value(v, self.epsilon) for v in in_lbs]
         in_ubs = [ops.interval_from_value(v, self.epsilon) for v in in_ubs]
 
-        # 3: Propagate input through linear layer
-        out_lbs, out_ubs = self.propagate(in_lbs, in_ubs)
-
-        # 4: Check output intersection
-        num_check = self.check_num_robust(out_lbs, out_ubs, label)
-        num_check = False
-        if num_check:
-            return True
-        else:
-            bounds = {
-                'matrix': self.layer.weight,
-                'offset': self.layer.bias
-            }
-            return self.check_sym_robust(in_lbs, in_ubs, bounds, label)
+        # 3: Check output intersection
+        bounds = {
+            'matrix': self.layer.weight,
+            'offset': self.layer.bias
+        }
+        return self.check_sym_robust(in_lbs, in_ubs, bounds, label)
