@@ -4,23 +4,25 @@ of a neural network linear layer
 
 """
 
-import numpy as np
-
-from core import ops
-
 
 class IntervalLayer:
     pass
 
 
 class LinearIntervalLayer(IntervalLayer):
+    """
+    This class represents a Linear Layer where the weights and bias matrices
+    contain interval values
+
+    Attributes
+    ----------
+    weight : list[list[interval]] (n x m)
+    bias : list[list[interval]] (n x 1)
+
+    """
+
     def __init__(self, weight: list, bias: list):
         super().__init__()
 
         self.weight = weight
         self.bias = bias
-
-    def predict(self, x: list) -> int:
-        """Procedure to execute the matrix multiplication"""
-        # TODO argmax
-        return np.argmax(ops.add(ops.matmul_left(self.weight, x), self.bias))

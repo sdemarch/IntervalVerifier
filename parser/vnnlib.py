@@ -4,6 +4,7 @@ This module reads a VNNLIB file containing a robustness specification
 
 
 def read_vnnlib(filename: str):
+    """This function creates the lists of lower and upper bounds contained in the specification"""
     lbs = []
     ubs = []
     label = int(filename.split('_')[-1].replace('.vnnlib', ''))
