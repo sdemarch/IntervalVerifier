@@ -47,7 +47,7 @@ class IntervalModel:
         out_props = ops.create_disjunction_matrix(len(sym_bounds['matrix']), label)
 
         for i in range(len(out_props)):
-            if ops.check_unsafe_symbolic(sym_bounds, out_props[i], in_lbs, in_ubs, self.epsilon):
+            if ops.check_unsafe_symbolic(sym_bounds, [out_props[i]], in_lbs, in_ubs, self.epsilon):
                 return False
 
         return True
@@ -62,8 +62,8 @@ class IntervalModel:
         weights_plus = ops.get_positive(self.layer.weight)
         weights_minus = ops.get_negative(self.layer.weight)
 
-        low = ops.add(ops.matmul_left(weights_plus, lbs), ops.matmul_left(weights_minus, ubs), self.layer.bias)
-        upp = ops.add(ops.matmul_left(weights_plus, ubs), ops.matmul_left(weights_minus, lbs), self.layer.bias)
+        low = ops.add(ops.matmul(weights_plus, lbs), ops.matmul(weights_minus, ubs), self.layer.bias)
+        upp = ops.add(ops.matmul(weights_plus, ubs), ops.matmul(weights_minus, lbs), self.layer.bias)
 
         return low, upp
 
@@ -72,8 +72,8 @@ class IntervalModel:
         in_lbs, in_ubs, label = vnnlib.read_vnnlib(vnnlib_path)
 
         # 2: Get interval input lbs and ubs
-        in_lbs = [ops.interval_from_value(v, self.epsilon) for v in in_lbs]
-        in_ubs = [ops.interval_from_value(v, self.epsilon) for v in in_ubs]
+        in_lbs = [[ops.interval_from_value(v, self.epsilon)] for v in in_lbs]
+        in_ubs = [[ops.interval_from_value(v, self.epsilon)] for v in in_ubs]
 
         # 3: Check output intersection
         bounds = {
